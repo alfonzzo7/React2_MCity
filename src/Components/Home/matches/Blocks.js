@@ -3,7 +3,7 @@ import { Slide } from 'react-reveal';
 
 import { firebaseLooper, reverseArray } from '../../ui/misc'
 import { firebaseMatches } from '../../../firebase';
-import MatchesBlock from './../../ui/matches_block';
+import MatchesBlock from './../../ui/matchesBlock';
 
 class Blocks extends Component {
     state = {
