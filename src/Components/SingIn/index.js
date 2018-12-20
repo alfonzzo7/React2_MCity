@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
-import { Fade } from 'react-reveal';
 
-import FormField from '../../ui/formField';
-import { validate } from '../../ui/misc';
-import { firebasePromotions } from '../../../firebase';
+import FormField from './../ui/formField';
+import { validate } from '../ui/misc';
+import { firebase } from '../../firebase';
 
-
-class Enroll extends Component {
+class SingIn extends Component {
     state = {
         formError: false,
         formSuccess: '',
@@ -22,6 +20,20 @@ class Enroll extends Component {
                 validation: {
                     required: true,
                     email: true,
+                },
+                valid: false,
+                validationMessage: '',
+            },
+            password: {
+                element: 'input',
+                value: '',
+                config: {
+                    name: 'password_input',
+                    type: 'password',
+                    placeholder: 'Enter your password',
+                },
+                validation: {
+                    required: true,
                 },
                 valid: false,
                 validationMessage: '',
@@ -81,17 +93,15 @@ class Enroll extends Component {
         }
 
         if (formIsValid) {
-            firebasePromotions
-                .orderByChild('email')
-                .equalTo(dataToSubmit.email)
-                .once('value')
-                .then((snapshot) => {
-                    if (snapshot.val() === null) {
-                        firebasePromotions.push(dataToSubmit);
-                        this.resetFormSuccess(true);
-                    } else {
-                        this.resetFormSuccess(false);
-                    }
+            firebase.auth()
+                .signInWithEmailAndPassword(dataToSubmit.email, dataToSubmit.password)
+                .then((user) => {
+                    this.props.history.push('/dashboard');
+                })
+                .catch(() => {
+                    this.setState({
+                        formError: true
+                    })
                 });
         } else {
             this.setState({formError: true});
@@ -100,35 +110,32 @@ class Enroll extends Component {
 
     render() {
         return (
-            <Fade>
-                <div className="enroll_wrapper">
-                    <form onSubmit={(event) => this.submirForm(event)}>
-                        <div className="enroll_title">
-                            Enter your email
-                        </div>
-                        <div className="enroll_input">
-                            <FormField
-                                id={'email'}
-                                formData={this.state.formData.email}
-                                change={(element) => this.updateForm(element)}
-                            />
+            <div className='container'>
+                <div className="signin_wrapper" style={{margin:'100px'}}>
+                    <form onSubmit={(event) => this.submitForm(event)}>
+                        <h2>Please Login</h2>
+                        <FormField
+                            id={'email'}
+                            formData={this.state.formData.email}
+                            change={(element) => this.updateForm(element)}
+                        />
+                        <FormField
+                            id={'password'}
+                            formData={this.state.formData.password}
+                            change={(element) => this.updateForm(element)}
+                        />
 
-                            {this.state.formError ? 
-                                <div className="error_label">Something is wrong, try again.</div>    
-                                : null
-                            }
-                            <div className="success_label">{this.state.formSuccess}</div>
-                            <button onClick={(event) => this.submirForm(event)} disabled={this.state.formError}>Enroll</button>
-
-                            <div className="enroll_discl">
-                                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Odit animi, perferendis quibusdam magnam placeat, nostrum laboriosam neque veniam eos, repellendus obcaecati minima. Voluptatem at dolore, earum delectus beatae recusandae ipsam.
-                            </div>
-                        </div>
+                        {this.state.formError ? 
+                            <div className="error_label">Something is wrong, try again.</div>    
+                            : null
+                        }
+                        <div className="success_label">{this.state.formSuccess}</div>
+                        <button onClick={(event) => this.submirForm(event)} disabled={this.state.formError}>Login</button>
                     </form>
                 </div>
-            </Fade>
+            </div>
         );
     }
 }
 
-export default Enroll;
+export default SingIn;
