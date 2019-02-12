@@ -51,7 +51,7 @@ class MeetPlayers extends Component {
                                 <div>
                                 <Tag
                                     link={true}
-                                    linkTo='/the_players'
+                                    linkTo='/the_team'
                                     add= {{
                                             background:'#ffffff',
                                             fontSize:'27px',

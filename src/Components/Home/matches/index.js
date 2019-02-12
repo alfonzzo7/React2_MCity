@@ -21,7 +21,7 @@ const MatchesHome = () => {
 
                 <Tag
                     link={true}
-                    linkTo='/the_team'
+                    linkTo='/the_matches'
                    add= {{
                         background:'#ffffff',
                         fontSize:'22px',
